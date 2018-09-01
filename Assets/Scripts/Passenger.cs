@@ -10,6 +10,12 @@ public class Passenger : MonoBehaviour {
 
     public Emotion emotion;
     public enum Emotion {
-        Neutral = 0
+        Neutral,
+        Pissed
+    }
+
+    public void BumperCall(Bumper.Direction direction, Bumper.IntensityLevel intensity)
+    {
+        // Todo: Add logic for responses depending on passenger and emotion
     }
 }

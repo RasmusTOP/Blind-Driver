@@ -6,8 +6,13 @@ public class Car : MonoBehaviour {
 
     public new Rigidbody2D rigidbody;
 
-    const float wheelFriction = 10;
-    const float engineAcceleration = 1;
+    // Maybe have integer of how much velocity the car has an increase it by one or decrease by one 
+    // when buttons are pressed
+    // Then try and adjust velocity to fit this speed
+
+    // Public so that you can edit them in the editor
+    public float wheelFriction = 10;
+    public float engineAcceleration = 1;
 
     void FixedUpdate() {
 
