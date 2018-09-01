@@ -9,7 +9,7 @@ public class Bumper : MonoBehaviour {
 
     public Direction Position;
     public IntensityLevel Intensity;
-    public Passenger Reciever;
+    public PassengerController Reciever;
     
 	// Use this for initialization
 	void Start () {
