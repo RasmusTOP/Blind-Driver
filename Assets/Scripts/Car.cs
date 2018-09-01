@@ -6,32 +6,40 @@ public class Car : MonoBehaviour {
 
     public new Rigidbody2D rigidbody;
 
-    int gear;
-    public float Speed {
-        get {
-            return gear;
-        }
-    }
-    const float maxAcceleration = 10;
-	
-	void Update () {
+    const float wheelFriction = 10;
+    const float engineAcceleration = 1;
 
-		if (Input.GetKeyDown(KeyCode.W) && gear < 3)
-            gear++;
+    void FixedUpdate() {
 
-        if (Input.GetKeyDown(KeyCode.S) && gear > -3)
-            gear--;
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            gear = 0;
-    }
-
-    private void FixedUpdate() {
+        bool brakes = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0);
         rigidbody.MoveRotation(rigidbody.rotation - rigidbody.velocity.magnitude * Time.deltaTime * Input.GetAxisRaw("Horizontal") * 60);
-        Vector2 targetVelocity = transform.right.normalized * Speed;
+        Vector2 targetVelocity = brakes ? Vector2.zero : (Vector2)Vector3.ProjectOnPlane(rigidbody.velocity, transform.up);
         Vector2 delta = targetVelocity - rigidbody.velocity;
-        delta = Vector2.ClampMagnitude(delta, Time.deltaTime * maxAcceleration);
+        float skid = delta.magnitude - Time.deltaTime * wheelFriction;
+        if (skid > 0)
+            delta = Vector2.ClampMagnitude(delta, Time.deltaTime * wheelFriction);
         rigidbody.AddForce(delta * rigidbody.mass, ForceMode2D.Impulse);
-        
+        if (!brakes)
+            rigidbody.AddForce(transform.right * rigidbody.mass * Input.GetAxisRaw("Vertical") * Time.deltaTime * engineAcceleration, ForceMode2D.Impulse);
+
+        //todo: change engine noise based on Input.GetAxisRaw("Vertical")
+        //todo: play steering wheel noise based on Input.GetAxisRaw("Vertical")
+        //todo: play skid noise
+        //todo: play brake pedal noise
+        //todo: change wheel noise pitch based on velocity
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        PassOnCollisionEnter2DToChildren(transform, collision);
+        //todo: make crash noise
+    }
+
+    private void PassOnCollisionEnter2DToChildren(Transform t, Collision2D collision) {
+        for (int i = t.childCount - 1; i >= 0; i--) {
+            var child = t.GetChild(i);
+            foreach (var voiceLine in child.GetComponents<VoiceLine>())
+                voiceLine.OnCollide(collision);
+            PassOnCollisionEnter2DToChildren(child, collision);
+        }
     }
 }
