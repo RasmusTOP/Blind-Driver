@@ -5,19 +5,19 @@ using UnityEngine;
 public class VoiceLine : MonoBehaviour {
 
     public int priority;
-    private Passenger passenger;
+    private PassengerController passenger;
     private float cooldown = 0;
-    private Dictionary<Passenger.Emotion, AudioClip> audioClipDictionary;
+    private Dictionary<PassengerController.Emotion, AudioClip> audioClipDictionary;
 
     [System.Serializable]
     public struct EmotionalAudioClip {
-        public Passenger.Emotion emotion;
+        public PassengerController.Emotion emotion;
         public AudioClip audioClip;
     }
     public EmotionalAudioClip[] audioClips = { new EmotionalAudioClip { } };
 
     private void Start() {
-        audioClipDictionary = new Dictionary<Passenger.Emotion, AudioClip>();
+        audioClipDictionary = new Dictionary<PassengerController.Emotion, AudioClip>();
         foreach (EmotionalAudioClip e in audioClips) {
             if (audioClipDictionary.ContainsKey(e.emotion)) {
                 Debug.LogWarning("Duplicate emotion ignored");
@@ -37,10 +37,10 @@ public class VoiceLine : MonoBehaviour {
         audioClips = null;
     }
 
-    Passenger GetPassenger(Transform t) {
+    PassengerController GetPassenger(Transform t) {
         if (t == null)
             return null;
-        return t.GetComponent<Passenger>() ?? GetPassenger(t.parent);
+        return t.GetComponent<PassengerController>() ?? GetPassenger(t.parent);
     }
 
     private void Update() {
@@ -72,7 +72,7 @@ public class VoiceLine : MonoBehaviour {
         AudioClip audioClip;
         if (audioClipDictionary.TryGetValue(passenger.emotion, out audioClip)) {
 
-        } else if (audioClipDictionary.TryGetValue(Passenger.Emotion.Neutral, out audioClip)) {
+        } else if (audioClipDictionary.TryGetValue(PassengerController.Emotion.Neutral, out audioClip)) {
 
         } else {
             audioClip = new List<AudioClip>(audioClipDictionary.Values)[0];

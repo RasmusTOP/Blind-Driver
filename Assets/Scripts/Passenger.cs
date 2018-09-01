@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Passenger : MonoBehaviour {
-
-    [HideInInspector]
-    public VoiceLine lastVoiceLineStarted;
-    public AudioSource audioSource;
-
-    public Emotion emotion;
-    public enum Emotion {
-        Neutral = 0
+[CreateAssetMenu(fileName = "passenger", menuName = "Passenger", order = 1)]
+public class Passenger : ScriptableObject {
+    [System.Serializable]
+    public class Directions
+    {
+        public AudioClip[] left, right, front;
     }
+
+    public string Name;
+
+    public Directions intense;
+    public Directions extreme;
 }
